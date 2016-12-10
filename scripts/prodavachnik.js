@@ -7,6 +7,10 @@ const kinveyAppAuthHeaders = {
     'Content-Type': 'application/json'
 };
 
+let userCredentials = {
+    'Authorization': `Kinvey ${sessionStorage.getItem('authToken')}`,
+    'Content-Type': 'application/json'
+};
 
 function startApp() {
     showHideMenuLinks();
@@ -16,15 +20,17 @@ function startApp() {
     attachButtonsEvents();
 
     showHomeView();
-
-    $(document).on({
-        ajaxStart: () => $('#loadingBox').show(),
-        ajaxStop: () => {
-            $('#loadingBox').hide();
+//TODO:Loading bar
+    $(document).on(
+        {
+            ajaxStart: function(){$('#loadingBox').show()},
+            ajaxStop: function(){$('#loadingBox').hide()}
         }
-    });
+    );
 }
 
+
+//TODO: navigation bar buttons without login
 function attachButtonsEvents () {
     $('#buttonRegisterUser').click(registerUser);
     $('#buttonLoginUser').click(loginUser);
@@ -32,6 +38,8 @@ function attachButtonsEvents () {
     $('#buttonEditAd').click(editAd);
 }
 
+
+//TODO:Edit
 function editAd () {
     let adId = $('#formEditAd input[name=id]').val();
     let dateInfo = $('#formEditAd input[name=datePublished]').val().split('-');
@@ -65,6 +73,8 @@ function editAd () {
         });
 }
 
+
+//TODO:Create
 function createAd () {
     let title = $('#formCreateAd input[name=title]').val();
     let description = $('#formCreateAd textarea[name=description]').val();
@@ -73,7 +83,7 @@ function createAd () {
     let dateCreated = `${dateInfo[1]}/${dateInfo[2]}/${dateInfo[0]}`;
     let price = Number($('#formCreateAd input[name=price]').val()).toFixed(2);
     price = Number(price);
-    let image = $('#formCreateAd input[name=image]').val();
+    let image = $('#formCreateAd input[name=imagUrl]').val();
     let newAd = {
         title: title,
         description: description,
@@ -102,6 +112,8 @@ function createAd () {
         });
 }
 
+
+//TODO:Login
 function loginUser () {
     let userData = {
         username: $('#formLogin input[name=username]').val(),
@@ -129,6 +141,8 @@ function loginSuccess (userInfo) {
     showInfoBox('You are now logged in');
 }
 
+
+//TODO:Register
 function registerUser () {
     let userData = {
         username: $('#formRegister input[name=username]').val(),
@@ -157,12 +171,16 @@ function registerSuccess (userInfo) {
     // showInfo('User registration successful.');
 }
 
+
+//TODO:SetState at sessionStorage
 function saveAuthInSession (userInfo) {
     sessionStorage.setItem('authToken', userInfo._kmd.authtoken);
     sessionStorage.setItem('userId', userInfo._id);
     sessionStorage.setItem('username', userInfo.username);
 }
 
+
+//TODO:Navbar buttons with login
 function attachMenuLinksEvents () {
     $('#linkHome').click(showHomeView);
     $('#linkLogin').click(showLoginView);
@@ -172,6 +190,8 @@ function attachMenuLinksEvents () {
     $('#linkLogout').click(logoutUser);
 }
 
+
+//TODO:List data
 function listAds () {
     $('#ads').empty();
     let authToken = sessionStorage.getItem('authToken');
@@ -233,6 +253,8 @@ function displayAds (ads) {
     showListAdsView();
 }
 
+
+//TODO: Buttons at listed data
 function attachAdsButtonsEvents () {
     $('.delete-ad-btn').click(deleteAd);
     $('.edit-ad-btn').click(getAdInfo);
@@ -277,6 +299,8 @@ function displayAdDetails (ad) {
     showAdDetailsView();
 }
 
+
+//TODO:Display edit form
 function displayAdInEditForm (adInfo) {
     $('#formEditAd input[name=id]').val(adInfo._id);
     $('#formEditAd input[name=title]').val(adInfo.title);
@@ -306,6 +330,8 @@ function getAdInfo (event) {
     $.ajax(getAdRequest);
 }
 
+
+//TODO:Delete
 function deleteAd (event) {
     let adId = $(event.currentTarget).attr('data-ad-id');
 
@@ -325,6 +351,8 @@ function deleteAd (event) {
         });
 }
 
+
+//TODO:Show views
 function showView (viewName) {
     $('main > section').hide();
     $(`#${viewName}`).show();
@@ -358,6 +386,8 @@ function showAdDetailsView () {
     showView('viewDetailsAd');
 }
 
+
+//TODO:Show/hide navgation buttons
 function showHideMenuLinks () {
     if (sessionStorage.getItem('authToken')) {
         // Logged in user
@@ -378,6 +408,8 @@ function showHideMenuLinks () {
     }
 }
 
+
+//TODO:AJAX error
 function handleAjaxError (response) {
     let errorMsg = JSON.stringify(response);
 
@@ -392,16 +424,22 @@ function handleAjaxError (response) {
     showError(errorMsg);
 }
 
+
+//TODO:Logout
 function logoutUser () {
     sessionStorage.clear();
     showHideMenuLinks();
     showHomeView();
 }
 
+
+//TODO:Info box
 function showInfoBox (message) {
     $('#infoBox').text(message).show().fadeOut(3000);
 }
 
+
+//TODO:Error box
 function showError(message) {
     $('#errorBox').text(message).show().click(function () {
         $('#errorBox').hide();
